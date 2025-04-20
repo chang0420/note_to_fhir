@@ -16,8 +16,6 @@ model_name = "emilyalsentzer/Bio_ClinicalBERT"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name)
 
-subject_id = ""
-hadm_id = ""
 
 
 def create_diagnoses_first(patient_notes, d_icd_diagnoses):
