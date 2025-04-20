@@ -16,7 +16,8 @@ model_name = "emilyalsentzer/Bio_ClinicalBERT"
 tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name)
 
-
+subject_id = ""
+hadm_id = ""
 
 
 def create_diagnoses_first(patient_notes, d_icd_diagnoses):
@@ -38,15 +39,12 @@ def create_diagnoses_first(patient_notes, d_icd_diagnoses):
             similarity = cosine_similarity([patient_embedding], [embedding])[0][0]
             if similarity > 0.8:  
                 all_detected_diagnoses.add(condition)  
-            print(f"Similarity with {condition}: {similarity}")
-            print(f"Text: {patient_text}\n")
 
 
     
     all_detected_diagnoses_array = list(all_detected_diagnoses)
 
 
-    
     icd_mapping = dict(zip(d_icd_diagnoses['long_title'], d_icd_diagnoses['icd9_code']))
 
     
