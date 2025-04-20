@@ -54,7 +54,7 @@ def create_diagnoses_first(patient_notes, d_icd_diagnoses):
 
     
     discharge_diagnoses_resources = [
-        create_dischargediagnoses(entry["Diagnosis"], entry["ICD_Code"])
+        create_dischargediagnoses(subject_id, hadm_id, entry["Diagnosis"], entry["ICD_Code"])
         for entry in detected_diagnoses_with_codes
     ]
     
@@ -79,7 +79,7 @@ def map_diagnoses_to_icd9(diagnoses, mapping_df):
 
 
 
-def create_dischargediagnoses(diagnosis, icd_code):
+def create_dischargediagnoses(subject_id, hadm_id, diagnosis, icd_code):
     """FHIR Discharge Diagnosis"""
     now = datetime.now()
     iso_charttime = now.isoformat()
