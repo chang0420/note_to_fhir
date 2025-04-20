@@ -17,15 +17,6 @@ tokenizer = AutoTokenizer.from_pretrained(model_name)
 model = AutoModel.from_pretrained(model_name)
 
 
-def clean_text(text):
-    text = str(text)
-    text = re.sub(r'_+|[-]{10,}|[=]{10,}', ' ', text)
-    text = re.sub(r'\s+', ' ', text)
-    text = re.sub(r'([.,():])(\1+)', r'\1', text)
-    text = text.lower()  # 避免大小寫問題
-    text = text.strip()
-    return text
-
 
 
 def create_diagnoses_first(patient_notes, d_icd_diagnoses):
