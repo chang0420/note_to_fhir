@@ -22,7 +22,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 def physical_exam_frist(pt_notes):
-    subject_id = pt_notes["subject_id"][0]
+    subject_id = pt_notes["subject_id"]
     global echo_keywords
     echo_keywords = [
         "test information", "indication", "height: (in)", "weight (lb)", "bsa (m2)",
