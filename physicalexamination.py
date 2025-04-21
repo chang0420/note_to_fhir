@@ -44,14 +44,14 @@ def physical_exam_frist(pt_notes):
     return fhir_physical_exams_data
     
 
-def create_fhir_physical_exam(indication, findings):
+def create_fhir_physical_exam(pd_id, indication, findings):
     now = datetime.now()
     iso_charttime = now.isoformat()
 
     # 理學檢查
     physical_exam_resource = {
         "resourceType": "Observation",
-        "id": f"PhysicalExam-{subject_id}",
+        "id": f"PhysicalExam-{pd_id}",
         "status": "final",
         "category": [
             {
@@ -75,7 +75,7 @@ def create_fhir_physical_exam(indication, findings):
             "text": indication
         },
         "subject": {
-            "reference": f"Patient/{subject_id}"
+            "reference": f"Patient/{pd_id}"
         },
         "effectiveDateTime": iso_charttime,
         "valueString": findings
