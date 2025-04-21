@@ -53,7 +53,7 @@ def create_diagnoses_first(patient_notes, d_icd_diagnoses):
 
     
     discharge_diagnoses_resources = [
-        create_dischargediagnoses(p_id, entry["Diagnosis"], entry["ICD_Code"])
+        create_dischargediagnoses(subject_id, entry["Diagnosis"], entry["ICD_Code"])
         for entry in detected_diagnoses_with_codes
     ]
     
