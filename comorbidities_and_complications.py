@@ -7,7 +7,7 @@ Created on Mon Apr 21 19:36:55 2025
 
 import re
 import pandas as pd
-
+from datetime import datetime
 
 def create_comorbidities_and_complications(icd_code, diagnoses):
 
