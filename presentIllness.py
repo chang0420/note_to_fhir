@@ -36,7 +36,6 @@ def create_chief_complaint_observation(row, icd_mapping):
     else:
         print(f"No ICD codes found for subject {subject_id}")
 
-    # 建立 FHIR Condition 資源
     condition_resource = {
         "resourceType": "Condition",
         "id": f"Condition-{subject_id}",
@@ -83,7 +82,6 @@ def create_chief_complaint_observation(row, icd_mapping):
 def create_icd_mapping(icd_df):
     icd_mapping = {}
     for _, row in icd_df.iterrows():
-        # 將 subject_id 轉換為字串
         subject_id = str(row['subject_id'])
         icd_entry = {
             'icd9_code': row['icd9_code'],
