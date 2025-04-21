@@ -19,7 +19,7 @@ model = AutoModel.from_pretrained(model_name)
 
 
 def create_diagnoses_first(patient_notes, d_icd_diagnoses):
-    subject_id = patient_notes["subject_id"]
+    subject_id = patient_notes["subject_id"][0]
     diagnosis_keywords = d_icd_diagnoses['long_title'].tolist()
     
     diagnoses_embeddings = {c: get_embedding(c) for c in diagnosis_keywords}
