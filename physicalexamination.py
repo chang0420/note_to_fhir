@@ -17,13 +17,40 @@ import json
 
 
 
+def physical_exam_frist(pt_notes):
+    model_name = "emilyalsentzer/Bio_ClinicalBERT"
+    tokenizer = AutoTokenizer.from_pretrained(model_name)
+    model = AutoModel.from_pretrained(model_name)
+    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+    model.to(device)
+
+    global echo_keywords
+    echo_keywords = [
+        "test information", "indication", "height: (in)", "weight (lb)", "bsa (m2)",
+        "bp (mm hg)", "status", "date/time", "test",
+        "doppler", "contrast", "technical quality", "findings", "conclusions", "impression", "plan"
+    ]
+
+    echo_key_info = extract_echo_key_info(pt_notes, tokenizer, model)
+    echo_summary, echo_data = generate_echo_summary(echo_key_info)
+    fhir_physical_exams_data = []
+    for record in echo_data:
+        key_info = record.get("key_info", {})
+        indication = key_info.get("indication", "no Indication")
+        findings = key_info.get("findings", "no Findings")
+
+        fhir_resource = create_fhir_physical_exam(indication, findings)
+        fhir_physical_exams_data.append(fhir_resource)
+        
+    return fhir_physical_exams_data
+    
 
 def create_fhir_physical_exam(indication, findings):
     """將indication和findings製作成FHIR理學檢查資源"""
     now = datetime.now()
     iso_charttime = now.isoformat()
 
-    # 理學檢查 FHIR 資源
+    # 理學檢查
     physical_exam_resource = {
         "resourceType": "Observation",
         "id": f"PhysicalExam-{subject_id}",
@@ -57,22 +84,6 @@ def create_fhir_physical_exam(indication, findings):
     }
 
     return physical_exam_resource
-
-
-def clean_text(text):
-
-    text = str(text)
-    text = re.sub(r'_+|[-]{10,}|[=]{10,}', ' ', text)
-    #text = re.sub(r'[^\w\s.,():\-]', '', text)
-    text = re.sub(r'\s+', ' ', text)
-    text = re.sub(r'([.,():])(\1+)', r'\1', text)
-    text = text.lower() #避免大小寫問題
-    text = text.strip()
-    return text
-
-
-
-
 
 def extract_specific_keywords(text, keywords):
     lower_text = text.lower()
@@ -189,7 +200,7 @@ def generate_echo_summary(key_info_results):
             summary.append(f"\nRecord {i+1} - Time: {charttime}")
 
             if not key_info:
-                summary.append("* 未找到關鍵資訊")
+                summary.append("* not found!")
                 continue
 
             record_texts = []
@@ -210,7 +221,4 @@ def generate_echo_summary(key_info_results):
             summary.append(f"* 處理記錄 {i+1} 時發生錯誤: {str(e)}")
 
     return "\n".join(summary), echo_data
-
-
-
 
