@@ -9,7 +9,7 @@ import re
 import pandas as pd
 from datetime import datetime
 
-def create_comorbidities_and_complications(icd_code, diagnoses):
+def create_comorbidities_and_complications(pt_id, icd_code, diagnoses):
 
     icd_code = icd_code.replace('\r\n', '').strip()
     now = datetime.now()
@@ -18,7 +18,7 @@ def create_comorbidities_and_complications(icd_code, diagnoses):
 
     condition_resource = {
         "resourceType": "Condition",
-        "id": f"Condition-{subject_id}", 
+        "id": f"Condition-{pt_id}", 
          "clinicalStatus" : {
           "coding" : [
             {
@@ -52,10 +52,10 @@ def create_comorbidities_and_complications(icd_code, diagnoses):
             "text": diagnoses
         },
         "subject": {
-            "reference": f"Patient/{subject_id}"
+            "reference": f"Patient/{pt_id}"
         },
         "encounter": {
-            "reference": f"Encounter/{subject_id}" 
+            "reference": f"Encounter/{pt_id}" 
         },
         "recordedDateTime": iso_charttime,
 
