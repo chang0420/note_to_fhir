@@ -16,10 +16,10 @@ from datetime import datetime
 import json
 
 model_name = "emilyalsentzer/Bio_ClinicalBERT"
-    tokenizer = AutoTokenizer.from_pretrained(model_name)
-    model = AutoModel.from_pretrained(model_name)
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model.to(device)
+tokenizer = AutoTokenizer.from_pretrained(model_name)
+model = AutoModel.from_pretrained(model_name)
+device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+model.to(device)
 
 def physical_exam_frist(pt_notes):
     global echo_keywords
