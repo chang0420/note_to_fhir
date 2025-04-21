@@ -20,7 +20,6 @@ model = AutoModel.from_pretrained(model_name)
 
 def create_diagnoses_first(patient_notes, d_icd_diagnoses):
     subject_id = patient_notes["subject_id"]
-    hadm_id = patient_notes["hadm_id"]
     diagnosis_keywords = d_icd_diagnoses['long_title'].tolist()
     
     diagnoses_embeddings = {c: get_embedding(c) for c in diagnosis_keywords}
@@ -54,7 +53,7 @@ def create_diagnoses_first(patient_notes, d_icd_diagnoses):
 
     
     discharge_diagnoses_resources = [
-        create_dischargediagnoses(subject_id, hadm_id, entry["Diagnosis"], entry["ICD_Code"])
+        create_dischargediagnoses(p_id, entry["Diagnosis"], entry["ICD_Code"])
         for entry in detected_diagnoses_with_codes
     ]
     
@@ -79,7 +78,7 @@ def map_diagnoses_to_icd9(diagnoses, mapping_df):
 
 
 
-def create_dischargediagnoses(subject_id, hadm_id, diagnosis, icd_code):
+def create_dischargediagnoses(subject_id, diagnosis, icd_code):
     """FHIR Discharge Diagnosis"""
     now = datetime.now()
     iso_charttime = now.isoformat()
@@ -87,7 +86,7 @@ def create_dischargediagnoses(subject_id, hadm_id, diagnosis, icd_code):
 
     discharge_diagnosis_resource = {
         "resourceType": "Condition",
-        "id": f"DischargeDiagnosis-{subject_id}",
+        "id": f"DischargeDiagnosis-{p_id}",
         "clinicalStatus": {
             "coding": [
                 {
@@ -120,10 +119,10 @@ def create_dischargediagnoses(subject_id, hadm_id, diagnosis, icd_code):
             "text": diagnosis
         },
         "subject": {
-            "reference": f"Patient/{subject_id}"
+            "reference": f"Patient/{p_id}"
         },
         "encounter": {
-            "reference": f"Encounter/{subject_id}"
+            "reference": f"Encounter/{p_id}"
         },
         "recordedDate": iso_charttime,
     }
