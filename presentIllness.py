@@ -9,7 +9,7 @@ import json
 import ast
 
 
-def create_chief_complaint_observation(row, icd_mapping):
+def create_presentIllness_observation(row, icd_mapping):
     subject_id = row['SUBJECT_ID']
     row_id = row['ROW_ID']
 
