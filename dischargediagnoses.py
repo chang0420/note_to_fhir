@@ -78,7 +78,7 @@ def map_diagnoses_to_icd9(diagnoses, mapping_df):
 
 
 
-def create_dischargediagnoses(subject_id, diagnosis, icd_code):
+def create_dischargediagnoses(p_id, diagnosis, icd_code):
     """FHIR Discharge Diagnosis"""
     now = datetime.now()
     iso_charttime = now.isoformat()
