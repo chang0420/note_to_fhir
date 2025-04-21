@@ -9,16 +9,10 @@ from datetime import datetime
 
 
 def create_procedure(row):
-    """
-    Creates a FHIR Procedure resource from a single row of data.
-    """
     subject_id = row['subject_id']
     procedure_icd = row['icd9_code']
-
-    # Ensure procedure is a string before replacing newline characters
     procedure = str(row['long_title'])
     procedure = procedure.replace("\n", " ")
-
     now = datetime.now()
     iso_charttime = now.isoformat()
 
@@ -53,7 +47,7 @@ def create_procedure(row):
             "reference": f"Patient/{subject_id}"
         },
         "encounter": {
-            "reference": f"Encounter/{subject_id}" # Use hadm_id for encounter reference
+            "reference": f"Encounter/{subject_id}"
         },
         "effectiveDateTime": iso_charttime,
 
