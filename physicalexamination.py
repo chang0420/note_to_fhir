@@ -22,6 +22,7 @@ device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
 model.to(device)
 
 def physical_exam_frist(pt_notes):
+    subject_id = pt_notes["subject_id"][0]
     global echo_keywords
     echo_keywords = [
         "test information", "indication", "height: (in)", "weight (lb)", "bsa (m2)",
@@ -44,7 +45,6 @@ def physical_exam_frist(pt_notes):
     
 
 def create_fhir_physical_exam(indication, findings):
-    """將indication和findings製作成FHIR理學檢查資源"""
     now = datetime.now()
     iso_charttime = now.isoformat()
 
@@ -124,7 +124,6 @@ def split_into_paragraphs(text, max_tokens=300): #512
         if len(tokens) <= max_tokens:
             result.append(para)
         else:
-            # 按句子分割長段落
             sentences = [s.strip() for s in re.split(r'[.!?]\s+', para) if s.strip()]
             current = ""
             for sentence in sentences:
