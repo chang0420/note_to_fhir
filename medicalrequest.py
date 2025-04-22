@@ -27,13 +27,16 @@ def format_discharge_medications(df, dischargetime):
 
 
 def create_fhir_medication_request(df, dischargetime):
+    """Create FHIR MedicationRequest resources"""
     fhir_resources = []
     unique_df = df.drop_duplicates(subset=["drug"])
-    dischargetime_value = dischargetime.iloc[0].split()[0]
+    dischargetime_value = dischargetime.iloc[0]
+    dischargetime_value = dischargetime_value.split()[0]
 
-    for _, row in unique_df.iterrows():
+    for idx, row in unique_df.iterrows():
         end_date = row['enddate'].split()[0] if pd.notna(row['enddate']) else None
         if end_date == dischargetime_value:
+            # Create FHIR MedicationRequest resource
             medication_request = {
                 "resourceType": "MedicationRequest",
                 "id": f"MedicationRequest-{row['row_id']}",
@@ -43,39 +46,26 @@ def create_fhir_medication_request(df, dischargetime):
                     "coding": [
                         {
                             "system": "http://www.nlm.nih.gov/research/umls/rxnorm",
-                            "code": row["formulary_drug_cd"],
-                            "display": row["drug"]
+                            "code": row["formulary_drug_cd"],  
+                            "display": f"{row['drug']} {row['dose_val_rx']} {row['dose_unit_rx']} {row['route']}"
                         }
-                    ],
-                    "text": row["drug"]
+                    ]
                 },
-                "subject": {"reference": f"Patient/{row['subject_id']}"},
-                "encounter": {"reference": f"Encounter/{row['hadm_id']}"},
-                "authoredOn": dischargetime_value,
-                "dosageInstruction": [
+                "subject": {
+                    "reference": f"Patient/{row['subject_id']}"
+                },
+                "encounter": {
+                    "reference": f"Encounter/{row['subject_id']}"
+                },
+                "performer": {
+                    "reference": f"Practitioner/Practitioner-min"
+                },
+                "basedOn":[
                     {
-                        "text": f"{row['dose_val_rx']} {row['dose_unit_rx']} {row['route']}",
-                        "route": {
-                            "coding": [
-                                {
-                                    "system": "http://terminology.hl7.org/CodeSystem/route-of-administration",
-                                    "code": row["route"],
-                                    "display": row["route"]
-                                }
-                            ]
-                        },
-                        "doseAndRate": [
-                            {
-                                "doseQuantity": {
-                                    "value": row["dose_val_rx"],
-                                    "unit": row["dose_unit_rx"],
-                                    "system": "http://unitsofmeasure.org",
-                                    "code": row["dose_unit_rx"]
-                                }
-                            }
-                        ]
+                        "reference" : "CarePlan/CarePlan-min"
                     }
                 ]
+                
             }
             fhir_resources.append(medication_request)
 
